@@ -1,0 +1,1 @@
+day7/InputDay7.txt Operator1 Operator2 Operator3 Operator4

@@ -1,0 +1,57 @@
+
+from icecream import ic
+
+# Define the grid with the given data
+grid = [
+    [".", ".", ".", ".", ".", ".", "#", ".", ".", ".", ".", "#"],
+    [".", ".", ".", "#", ".", ".", ".", ".", "0", ".", ".", "."],
+    ["#", ".", ".", ".", "#", "0", ".", ".", ".", ".", "#", "."],
+    [".", ".", "#", ".", ".", ".", ".", "0", ".", ".", ".", "."],
+    [".", ".", ".", ".", "0", ".", ".", ".", ".", "#", ".", "."],
+    [".", "#", ".", ".", ".", ".", "A", ".", ".", ".", ".", "."],
+    [".", ".", ".", "#", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "#", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", "A", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "A", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "#", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "#", "."]
+]
+
+# Function to print the grid using icecream's ic
+def print_grid(grid):
+    for row in grid:
+        ic("".join(row))
+
+# Function to calculate the distance between antennas and add antinodes
+def add_antinodes(grid):
+    # Concatenate all rows to form one string
+    concatenated_grid = "".join("".join(row) for row in grid)
+    
+    # Find the positions of the antennas
+    antenna_positions = [concatenated_grid.index(char) for char in ['A']]
+    
+    # Calculate distances between antennas
+    distances = [antenna_positions[i+1] - antenna_positions[i] for i in range(len(antenna_positions) - 1)]
+    
+    # Add antinodes based on the distances
+    for i, distance in enumerate(distances):
+        if 0 <= antenna_positions[i] - distance < len(concatenated_grid):
+            concatenated_grid = concatenated_grid[:antenna_positions[i] - distance] + '$' + concatenated_grid[antenna_positions[i] - distance + 1:]
+        if 0 <= antenna_positions[i+1] + distance < len(concatenated_grid):
+            concatenated_grid = concatenated_grid[:antenna_positions[i+1] + distance] + '$' + concatenated_grid[antenna_positions[i+1] + distance + 1:]
+    
+    # Convert the concatenated string back to a grid
+    grid_with_antinodes = [list(concatenated_grid[i:i+12]) for i in range(0, len(concatenated_grid), 12)]
+    
+    return grid_with_antinodes
+
+# Add antinodes to the grid
+grid_with_antinodes = add_antinodes(grid)
+
+# Print the grid with antinodes
+print_grid(grid_with_antinodes)
+
+# Write the output to a file named 'Output.txt'
+with open('day8/Output.txt', 'w') as f:
+    for row in grid_with_antinodes:
+        f.write("".join(row) + "\n")
